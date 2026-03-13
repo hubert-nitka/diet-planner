@@ -10,11 +10,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 JSON_PATH = Path(os.getenv('JSON_PATH', str(BASE_DIR / "./data/diet.json")))
 LOG_PATH = Path(os.getenv('LOG_PATH', str(BASE_DIR / "./log/log.log")))
 
+# Folder paths
+
+IMGS_FOLDER = Path(os.getenv('IMGS_FOLDER', str(BASE_DIR / "./data/imgs")))
+
 # Login data
 WEB_USERNAME = os.getenv('WEB_USERNAME')
 WEB_PASSWORD = os.getenv('WEB_PASSWORD')
 LOGIN_SITE = os.getenv('LOGIN_SITE')
-TRAINING_SITE = os.getenv('TRAINING_SITE')
+DIET_SITE = os.getenv('DIET_SITE')
 
 # Data Base
 DB_HOST = os.getenv('DB_HOST')
