@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from config import LOGIN_SITE, DIET_SITE, IMGS_FOLDER
+from config import LOGIN_SITE, DIET_SITE, IMGS_FOLDER_WSL
 from src.utils import log, clean_img_name
 
 def scrape_diet_plan(email, password):
@@ -25,7 +25,7 @@ def scrape_diet_plan(email, password):
 
     try:
 
-        os.makedirs(IMGS_FOLDER, exist_ok=True)
+        os.makedirs(IMGS_FOLDER_WSL, exist_ok=True)
 
         log("Logging in...")
 
@@ -126,7 +126,7 @@ def scrape_diet_plan(email, password):
                     log(f"Found IMG URL: {img_url}")
 
                     img_name = clean_img_name(dish_name) + ".png"
-                    img_path = os.path.join(IMGS_FOLDER, img_name)
+                    img_path = os.path.join(IMGS_FOLDER_WSL, img_name)
                     response = requests.get(img_url, stream=True)
 
                     if response.status_code == 200:

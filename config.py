@@ -12,7 +12,8 @@ LOG_PATH = Path(os.getenv('LOG_PATH', str(BASE_DIR / "./log/log.log")))
 
 # Folder paths
 
-IMGS_FOLDER = Path(os.getenv('IMGS_FOLDER', str(BASE_DIR / "./data/imgs")))
+IMGS_FOLDER_WSL = Path(os.getenv('IMGS_FOLDER_WSL', str(BASE_DIR / "./data/imgs")))
+IMGS_FOLDER_WIN = Path(os.getenv('IMGS_FOLDER_WIN', "C:\\projects\\diet\\imgs"))
 
 # Login data
 WEB_USERNAME = os.getenv('WEB_USERNAME')
