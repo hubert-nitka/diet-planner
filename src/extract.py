@@ -117,7 +117,7 @@ def scrape_diet_plan(email, password):
                     dish_carbs = dish_macros[1].text.replace("g","").strip()
                     dish_proteins = dish_macros[2].text.replace("g","").strip()
                     dish_fats = dish_macros[3].text.replace("g","").strip()
-
+                    
                     # preview image
                     
                     img_element = card.find_element(By.CSS_SELECTOR, "img[class*='recipes-v2__preview-image']")
@@ -139,9 +139,9 @@ def scrape_diet_plan(email, password):
                     
                     # prep time and difficulty
 
-                    dish_stats = card.find_elements(By.CSS_SELECTOR, "div[class*='recipes-v2__stats']").text.split('\n')
-                    dish_prep_time = dish_stats[0].text.strip()
-                    dish_difficulty = dish_stats[1].text.strip()
+                    dish_stats = card.find_element(By.CSS_SELECTOR, "div[class*='recipes-v2__stats']").text.split('\n')
+                    dish_prep_time = dish_stats[0].strip()
+                    dish_difficulty = dish_stats[1].strip()
 
                     # ingredients
 
