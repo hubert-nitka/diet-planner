@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from config import LOGIN_SITE, DIET_SITE, IMGS_FOLDER_WSL
+from config import LOGIN_SITE, DIET_SITE, IMGS_FOLDER_WSL, IMGS_FOLDER_WIN
 from src.utils import log, clean_img_name
 
 def scrape_diet_plan(email, password):
@@ -126,14 +126,16 @@ def scrape_diet_plan(email, password):
                     log(f"Found IMG URL: {img_url}")
 
                     img_name = clean_img_name(dish_name) + ".png"
-                    img_path = os.path.join(IMGS_FOLDER_WSL, img_name)
+                    img_path_wsl = os.path.join(IMGS_FOLDER_WSL, img_name)
+                    img_path_win = f"{IMGS_FOLDER_WIN}\\{img_name}"
+
                     response = requests.get(img_url, stream=True)
 
                     if response.status_code == 200:
-                        with open(img_path, "wb") as file:
+                        with open(img_path_wsl, "wb") as file:
                             for chunk in response.iter_content(1024):
                                 file.write(chunk)
-                        log(f"IMG {img_name} saved successfuly [{img_path}]")
+                        log(f"IMG {img_name} saved successfuly [{img_path_wsl}]")
                     else:
                         log(f"Error saving IMG [{img_name}]")
                     
@@ -176,7 +178,8 @@ def scrape_diet_plan(email, password):
                         'prep_time': dish_prep_time,
                         'difficulty': dish_difficulty,
                         'ingredients': dish_ingredients,
-                        'instructions': dish_instructions
+                        'instructions': dish_instructions,
+                        'img_path': img_path_win
                     }
 
                     dishes.append(dish_data)

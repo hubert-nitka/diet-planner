@@ -1,10 +1,11 @@
 import json
 from src.extract import scrape_diet_plan
+from src.load import save_dish_to_db
 from src.utils import log, clear_screen
 from config import WEB_USERNAME, WEB_PASSWORD, JSON_PATH
 
 if __name__ == "__main__":
-
+    """
     clear_screen()
     log("=" * 80)
     log("SCRAPING PROCESS STARTED", echo=True)
@@ -21,3 +22,5 @@ if __name__ == "__main__":
     log("=" * 80)
     log("SCRAPING PROCESS ENDED", echo=True)
     log("=" * 80)
+    """
+    save_dish_to_db(JSON_PATH)
