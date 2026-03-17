@@ -10,7 +10,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from config import LOGIN_SITE, DIET_SITE, IMGS_FOLDER_WSL, IMGS_FOLDER_WIN
 from src.utils import log, clean_img_name
 
-def scrape_diet_plan(email, password):
+def scrape_diet_dishes(email, password):
     """
     Gathers complete diet plan from the portal and saves data to json file
     """
