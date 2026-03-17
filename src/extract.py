@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from config import LOGIN_SITE, DIET_SITE, IMGS_FOLDER_WSL, IMGS_FOLDER_WIN
+from config import LOGIN_SITE, DIET_SITE, DIET_PLAN_SITE, IMGS_FOLDER_WSL, IMGS_FOLDER_WIN
 from src.utils import log, clean_img_name
 
 def scrape_diet_dishes(email, password):
@@ -41,6 +41,8 @@ def scrape_diet_dishes(email, password):
 
         log("Logged in")
         log("Gathering diet plan...")
+
+        # Scrape diet dishes
 
         driver.get(DIET_SITE)
 
@@ -191,7 +193,44 @@ def scrape_diet_dishes(email, password):
 
             all_dishes[dish_type] = dishes
 
-        return all_dishes
+        #Scrape diet plan
+
+        driver.get(DIET_PLAN_SITE)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'div[class*="meals-list"]')
+            )
+        )
+
+        all_meals = []
+
+        meal_items = driver.find_elements(By.CSS_SELECTOR, 'div[class*="meal-container"]')
+
+        for meal in meal_items:
+            #find meal name
+            meal_type = meal.find_element(By.CSS_SELECTOR, 'div[class*="meal-header"]').text.strip()
+
+            #find meal macros
+
+            meal_macros = meal.find_elements(By.CSS_SELECTOR, 'span[class*="meal-macros__value"]')
+            print(len(meal_macros), [el.text for el in meal_macros])
+            meal_kcal = meal_macros[0].text.strip()
+            meal_carbs = meal_macros[1].text.replace("g", "").strip()
+            meal_proteins = meal_macros[2].text.replace("g", "").strip()
+            meal_fats = meal_macros[3].text.replace("g", "").strip()
+
+            meal_data = {
+                'meal_type': meal_type,
+                'meal_kcal': meal_kcal,
+                'meal_carbs': meal_carbs,
+                'meal_proteins': meal_proteins,
+                'meal_fats': meal_fats
+            }
+
+            all_meals.append(meal_data)
+
+        return all_dishes, all_meals
 
     finally:
         driver.quit()
