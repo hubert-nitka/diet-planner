@@ -2,7 +2,7 @@ import json
 from src.extract import scrape_diet_dishes
 from src.load import save_dish_to_db
 from src.utils import log, clear_screen
-from src.genxlsx import generate_diet_proposal
+from src.gendiet import generate_diet_proposal
 from config import WEB_USERNAME, WEB_PASSWORD, JSON_PATH_DISHES, JSON_PATH_MEALS
 
 if __name__ == "__main__":
