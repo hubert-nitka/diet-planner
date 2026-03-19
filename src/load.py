@@ -221,6 +221,7 @@ def create_dish_ingredients(engine, ingredients, dish_id):
                     """
                     INSERT INTO dish_ingredients (dish_id, ingredient_id, qty, unit_id)
                     VALUES (:dish_id, :ingredient_id, :qty, :unit_id)
+                    ON CONFLICT ON CONSTRAINT pk_dish_ingredient DO NOTHING
                     """
                 ),{
                     'dish_id': dish_id,
