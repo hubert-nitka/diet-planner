@@ -1,4 +1,20 @@
 import streamlit as st
+
+if "admin_authenticated" not in st.session_state:
+    st.session_state.admin_authenticated = False
+
+if not st.session_state.admin_authenticated:
+    st.set_page_config(layout="wide", page_title="Admin", page_icon="🔧")
+    st.title("🔒 Dostęp chroniony")
+    password = st.text_input("Hasło administratora:", type="password")
+    if st.button("Zaloguj"):
+        if password == "TWOJE_HASLO_ADMINA":
+            st.session_state.admin_authenticated = True
+            st.rerun()
+        else:
+            st.error("Nieprawidłowe hasło!")
+    st.stop()
+
 import json
 from config import WEB_USERNAME, WEB_PASSWORD, JSON_PATH_DISHES, JSON_PATH_MEALS
 from src.extract import scrape_diet_dishes
