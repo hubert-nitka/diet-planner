@@ -1,4 +1,10 @@
 import streamlit as st
+from config import WEB_USERNAME, WEB_PASSWORD, JSON_PATH_DISHES, JSON_PATH_MEALS, ADMIN_PASSWORD
+import json
+from src.extract import scrape_diet_dishes
+from src.load import save_dish_to_db
+from src.utils import log
+from src.gendiet import get_available_dish_types, get_all_dishes
 
 if "admin_authenticated" not in st.session_state:
     st.session_state.admin_authenticated = False
@@ -8,19 +14,12 @@ if not st.session_state.admin_authenticated:
     st.title("🔒 Dostęp chroniony")
     password = st.text_input("Hasło administratora:", type="password")
     if st.button("Zaloguj"):
-        if password == "TWOJE_HASLO_ADMINA":
+        if password == ADMIN_PASSWORD:
             st.session_state.admin_authenticated = True
             st.rerun()
         else:
             st.error("Nieprawidłowe hasło!")
     st.stop()
-
-import json
-from config import WEB_USERNAME, WEB_PASSWORD, JSON_PATH_DISHES, JSON_PATH_MEALS
-from src.extract import scrape_diet_dishes
-from src.load import save_dish_to_db
-from src.utils import log
-from src.gendiet import get_available_dish_types, get_all_dishes
 
 st.set_page_config(layout="wide", page_title="Admin", page_icon="🔧")
 st.title("🔧 Panel administracyjny")
