@@ -75,7 +75,7 @@ def scrape_diet_dishes(email, password):
                                 By.CSS_SELECTOR,
                                 "span[class*='skewed-menu__label']"
                                 ).text.strip()
-            
+
             log(f"Processing dish type: {dish_type}")
 
             # wait to load more than one dish cards
@@ -119,9 +119,9 @@ def scrape_diet_dishes(email, password):
                     dish_carbs = dish_macros[1].text.replace("g","").strip()
                     dish_proteins = dish_macros[2].text.replace("g","").strip()
                     dish_fats = dish_macros[3].text.replace("g","").strip()
-                    
+
                     # preview image
-                    
+
                     img_element = card.find_element(By.CSS_SELECTOR, "img[class*='recipes-v2__preview-image']")
                     img_url = img_element.get_attribute("src")
 
@@ -140,7 +140,7 @@ def scrape_diet_dishes(email, password):
                         log(f"IMG {img_name} saved successfuly [{img_path_wsl}]")
                     else:
                         log(f"Error saving IMG [{img_name}]")
-                    
+
                     # prep time and difficulty
 
                     dish_stats = card.find_element(By.CSS_SELECTOR, "div[class*='recipes-v2__stats']").text.split('\n')
@@ -165,7 +165,7 @@ def scrape_diet_dishes(email, password):
                                 'ingredient_unit': ingredient_unit
                             }
                         )
-                    
+
                     # instructions
 
                     instruction_elements = card.find_elements(By.CSS_SELECTOR, "div.instructions li")
@@ -214,7 +214,6 @@ def scrape_diet_dishes(email, password):
             #find meal macros
 
             meal_macros = meal.find_elements(By.CSS_SELECTOR, 'span[class*="meal-macros__value"]')
-            print(len(meal_macros), [el.text for el in meal_macros])
             meal_kcal = meal_macros[0].text.strip()
             meal_carbs = meal_macros[1].text.replace("g", "").strip()
             meal_proteins = meal_macros[2].text.replace("g", "").strip()

@@ -15,6 +15,7 @@ def log(message, level="INFO", echo=False):
     """
 
     timestamp = datetime.now(timezone.utc)
+    os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
 
     with open(LOG_PATH, 'a', encoding='utf-8') as f:
         f.write(f'{timestamp} UTC: [{level}] {message}\n')
@@ -44,7 +45,7 @@ def connect_to_database():
 
 def clean_img_name(name):
     """
-    Cleans string from any special characters replacing them with '_' 
+    Cleans string from any special characters replacing them with '_'
     to avoid file name conflict when saving an img
     """
     result = unicodedata.normalize('NFKD', name)
