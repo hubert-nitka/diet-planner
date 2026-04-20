@@ -2,6 +2,13 @@ from sqlalchemy import text
 from src.utils import connect_to_database
 import pandas as pd
 
+def get_dish_id_by_name(meal_plan: dict, dish_name: str) -> int | None:
+    for dishes in meal_plan.values():
+        for dish in dishes:
+            if dish['dish_name'] == dish_name:
+                return dish['id']
+    return None
+
 def get_dishes(dish_type, kcal_target, protein_target, carbs_target, fat_target, limit=8):
     """
     Get best 8 dishes for given meal time based on target kcal, protein, carbs and fat
@@ -78,7 +85,7 @@ def get_available_dish_types():
         available_types = [row[0] for row in result]
     finally:
         engine.dispose()
-    
+
     return available_types
 
 def get_all_dishes(dish_type):
@@ -90,8 +97,8 @@ def get_all_dishes(dish_type):
         with engine.connect() as conn:
             result = conn.execute(
                 text("""
-                     SELECT * FROM full_dishes_view 
-                     WHERE dish_type = :dish_type 
+                     SELECT * FROM full_dishes_view
+                     WHERE dish_type = :dish_type
                      ORDER BY dish_name
                      """
                 ),{"dish_type": dish_type}

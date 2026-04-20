@@ -5,11 +5,21 @@ from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
 import io
 from config import IMGS_FOLDER_WSL, JSON_PATH_MEALS
-from src.gendiet import get_dishes, get_available_dish_types
+from src.gendiet import get_dishes, get_available_dish_types, get_dish_id_by_name
 from src.utils import clean_img_name
 
 
 # --- LOGIC ---
+
+def macro_bar(kcal, protein, carbs, fat):
+    st.markdown(f"""
+        <div style="font-size:0.9rem; color:#ccc; padding: 0px 0">
+            🔥 <b style="color:white">{kcal}</b> kcal &nbsp;|&nbsp;
+            B: <b style="color:#4fc3f7">{protein}g</b> &nbsp;
+            W: <b style="color:#81c784">{carbs}g</b> &nbsp;
+            T: <b style="color:#ffb74d">{fat}g</b>
+        </div>
+    """, unsafe_allow_html=True)
 
 def generate_shopping_list(selected_meals, diet_dict):
     """Build a combined shopping list from selected weekly meals."""
@@ -182,7 +192,7 @@ if "diet_dict" not in st.session_state:
 
 # --- MAIN UI ---
 
-st.title("🥗 Diet Planner")
+st.title("🥗 Diet PlannerTEST ")
 
 # Macro adjustment panel
 with st.expander("⚙️ Dostosuj makro", expanded=False):
@@ -218,7 +228,7 @@ with st.expander("⚙️ Dostosuj makro", expanded=False):
     if st.button("🔄 Przelicz", type="primary", width='content'):
         st.session_state.macro_plan = edited_plan
         st.session_state.dish_limit = dish_limit
-        st.session_state.diet_dict  = None 
+        st.session_state.diet_dict  = None
 
 # Fetch dishes on first load or after Recalculate
 if st.session_state.diet_dict is None:
@@ -270,7 +280,7 @@ for dish in dishes_to_show:
     label = (
         f"{dish['dish_name']}   |   "
         f"🔥 {dish['kcal']} kcal   "
-        f"P: {dish['protein_g']}g  W: {dish['carbs_g']}g  T: {dish['fat_g']}g   |   "
+        f"B: {dish['protein_g']}g  W: {dish['carbs_g']}g  T: {dish['fat_g']}g   |   "
         f"🕒 {p_time}  💪 {d_level}  🛒 {n_ing} skł."
     )
     with st.expander(label):
@@ -298,16 +308,46 @@ st.sidebar.title("📅 Tygodniowe menu")
 days = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
 meal_types_to_plan = [m for m in diet_dict.keys() if m not in EXCLUDED_FROM_WEEK]
 
-selected_meals = []
+selected_meals_week = []
+
+name_to_macros = {
+    dish['dish_name']: dish
+    for m_type in meal_types_to_plan
+    for dish in diet_dict[m_type]
+}
 
 for day in days:
     with st.sidebar.expander(day):
+        selected_meals_day = []
         for m_type in meal_types_to_plan:
             options = [d["dish_name"] for d in diet_dict[m_type]]
             choice  = st.selectbox(f"{m_type}", options, key=f"{day}_{m_type}")
-            selected_meals.append(choice)
-
+            selected_meals_week.append(choice)
+            selected_meals_day.append(choice)
+        day_totals = {
+            key: sum(name_to_macros[name][key] for name in selected_meals_day if name in name_to_macros)
+            for key in ['kcal', 'protein_g', 'carbs_g', 'fat_g']
+        }
+        macro_bar(
+            day_totals['kcal'],
+            day_totals['protein_g'],
+            day_totals['carbs_g'],
+            day_totals['fat_g']
+        )
+with st.sidebar:
+    week_totals = {
+        key: sum(name_to_macros[name][key] for name in selected_meals_week if name in name_to_macros)
+        for key in ['kcal', 'protein_g', 'carbs_g', 'fat_g']
+    }
+    week_avg = {key: round(val / len(days)) for key, val in week_totals.items()}
+    st.subheader("Średnia dzienna")
+    macro_bar(
+        week_avg['kcal'],
+        week_avg['protein_g'],
+        week_avg['carbs_g'],
+        week_avg['fat_g']
+    )
 st.sidebar.divider()
 if st.sidebar.button("🚀 Wygeneruj listę zakupów"):
-    shopping_result = generate_shopping_list(selected_meals, diet_dict)
+    shopping_result = generate_shopping_list(selected_meals_week, diet_dict)
     show_shopping_list_dialog(shopping_result)

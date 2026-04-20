@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 from config import WEB_USERNAME, WEB_PASSWORD, JSON_PATH_DISHES, JSON_PATH_MEALS, ADMIN_PASSWORD
 import json
 from src.extract import scrape_diet_dishes
@@ -53,6 +54,8 @@ if st.button("▶️ Uruchom scraper", type="primary"):
             diet_dishes, diet_meals = scrape_diet_dishes(WEB_USERNAME, WEB_PASSWORD)
 
             # Saving data to JSON
+            os.makedirs(os.path.dirname(JSON_PATH_DISHES), exist_ok=True)
+            os.makedirs(os.path.dirname(JSON_PATH_MEALS), exist_ok=True)
             with open(JSON_PATH_DISHES, "w", encoding="utf-8") as f:
                 json.dump(diet_dishes, f, ensure_ascii=False, indent=2)
             with open(JSON_PATH_MEALS, "w", encoding="utf-8") as f:
