@@ -192,7 +192,7 @@ if "diet_dict" not in st.session_state:
 
 # --- MAIN UI ---
 
-st.title("🥗 Diet PlannerTEST ")
+st.title("🥗 Diet Planner")
 
 # Macro adjustment panel
 with st.expander("⚙️ Dostosuj makro", expanded=False):
