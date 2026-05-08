@@ -4,7 +4,7 @@ Load data gathered by webscraper from Training portal into database
 import json
 from sqlalchemy import text
 from src.utils import connect_to_database, log
-    
+
 def get_or_create_dish_type(engine, dish_type):
     """
     Check if dish type already exists in db or create new one if not and return id
@@ -22,12 +22,12 @@ def get_or_create_dish_type(engine, dish_type):
                 """
             ),{'dish_type': dish_type}
         )
-    
+
         existing_id = result.scalar()
 
         if existing_id:
             return existing_id
-    
+
     # Insert new dish_type
 
         result = conn.execute(
@@ -41,7 +41,7 @@ def get_or_create_dish_type(engine, dish_type):
         )
 
         return result.scalar()
-    
+
 def get_or_create_recipe(engine, dish_name, recipe, img_path, difficulty, prep_time):
     """
     Check if recipe already exists in db or create new one and return id
@@ -78,7 +78,7 @@ def get_or_create_recipe(engine, dish_name, recipe, img_path, difficulty, prep_t
 
         if existing_id:
             return existing_id
-        
+
         # Insert new recipe to db
 
         result = conn.execute(
@@ -118,7 +118,7 @@ def get_or_crete_ingredient(engine, ingredient_name):
         existing_id = result.scalar()
         if existing_id:
             return existing_id
-        
+
         #Create new ingredient
         result = conn.execute(
             text(
@@ -130,7 +130,7 @@ def get_or_crete_ingredient(engine, ingredient_name):
             ),{'ingredient_name': ingredient_name}
         )
 
-        return result.scalar() 
+        return result.scalar()
 
 
 def get_or_create_unit(engine, unit):
@@ -152,7 +152,7 @@ def get_or_create_unit(engine, unit):
 
         if existing_id:
             return existing_id
-        
+
         #Create new unit
         result = conn.execute(
             text(
@@ -165,7 +165,7 @@ def get_or_create_unit(engine, unit):
         )
 
         return result.scalar()
-    
+
 def get_or_create_dish(engine, recipe_id, kcal, carbs, proteins, fats, dish_type_id):
     with engine.begin() as conn:
         #Check if dish already exists
@@ -173,19 +173,20 @@ def get_or_create_dish(engine, recipe_id, kcal, carbs, proteins, fats, dish_type
             text(
                 """
                 SELECT id FROM dishes
-                WHERE recipe_id = :recipe_id AND kcal = :kcal
+                WHERE recipe_id = :recipe_id AND kcal = :kcal AND dish_type_id = :dish_type_id
                 """
             ),{
                 'recipe_id': recipe_id,
-                'kcal': kcal
+                'kcal': kcal,
+                'dish_type_id': dish_type_id
             }
         )
-        
+
         existing_id = result.scalar()
 
         if existing_id:
             return existing_id
-        
+
         #Create new dish
         result = conn.execute(
             text(
@@ -205,7 +206,7 @@ def get_or_create_dish(engine, recipe_id, kcal, carbs, proteins, fats, dish_type
         )
 
         return result.scalar()
-    
+
 
 
 def create_dish_ingredients(engine, ingredients, dish_id):
@@ -239,7 +240,7 @@ def save_dish_to_db(json_file):
     """
     Save dish to db
     """
-    
+
     engine = connect_to_database()
 
     try:
@@ -272,10 +273,10 @@ def save_dish_to_db(json_file):
 
                 # Check if recipe already exists or create new one
                 recipe_id = get_or_create_recipe(engine, dish_name, recipe, img_path, difficulty, prep_time)
-                
+
                 # Check if dish already exists or create new one
                 dish_id = get_or_create_dish(engine, recipe_id, kcal, carbs, proteins, fats, dish_type_id)
-                
+
                 # Create dish ingredients
                 create_dish_ingredients(engine, ingredients, dish_id)
 

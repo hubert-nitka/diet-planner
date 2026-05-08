@@ -182,6 +182,15 @@ if "macro_plan" not in st.session_state:
         }
         for m in trainer_plan
     }
+else:
+    for m in trainer_plan:
+        if m["meal_type"] not in st.session_state.macro_plan:
+            st.session_state.macro_plan[m["meal_type"]] = {
+                "kcal":     int(m["meal_kcal"]),
+                "proteins": int(m["meal_proteins"]),
+                "carbs":    int(m["meal_carbs"]),
+                "fats":     int(m["meal_fats"]),
+            }
 
 if "dish_limit" not in st.session_state:
     st.session_state.dish_limit = 8

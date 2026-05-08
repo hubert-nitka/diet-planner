@@ -2,7 +2,7 @@ from sqlalchemy import text
 from src.utils import connect_to_database
 import pandas as pd
 
-def get_dish_id_by_name(meal_plan: dict, dish_name: str) -> int | None:
+def get_dish_id_by_name(meal_plan, dish_name):
     for dishes in meal_plan.values():
         for dish in dishes:
             if dish['dish_name'] == dish_name:
@@ -77,7 +77,11 @@ def get_available_dish_types():
             result = conn.execute(
                 text(
                     """
-                    SELECT DISTINCT dish_type FROM full_dishes_view
+                    SELECT dt.type_name
+                    FROM dish_type dt
+                    JOIN (SELECT DISTINCT dish_type FROM full_dishes_view) fdv
+                        ON fdv.dish_type = dt.type_name
+                    ORDER BY dt.sort_order ASC
                     """
                 )
             )
