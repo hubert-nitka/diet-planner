@@ -31,11 +31,11 @@ def scrape_diet_dishes(email, password):
 
         driver.get(LOGIN_SITE)
 
-        wait.until(EC.presence_of_element_located((By.NAME, "email")))
+        wait.until(EC.presence_of_element_located((By.ID, "email")))
 
-        driver.find_element(By.NAME, "email").send_keys(email)
-        driver.find_element(By.NAME, "password").send_keys(password)
-        driver.find_element(By.CLASS_NAME, "submit").click()
+        driver.find_element(By.ID, "email").send_keys(email)
+        driver.find_element(By.ID, "password").send_keys(password)
+        driver.find_element(By.CSS_SELECTOR, "button[class*='button']").click()
 
         time.sleep(3)
 
